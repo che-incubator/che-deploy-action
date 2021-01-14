@@ -1,0 +1,97 @@
+{
+  "name": "che-deploy-action",
+  "version": "0.0.1",
+  "author": "Florent Benoit",
+  "description": "Install Eclipse Che with github action",
+  "license": "EPL-2.0",
+  "private": true,
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/tool-cache": "^1.6.1",
+    "axios": "^0.21.1",
+    "execa": "^5.0.0",
+    "fs-extra": "^9.0.1",
+    "inversify": "^5.0.5",
+    "js-yaml": "^4.0.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.6",
+    "@types/jest": "^26.0.20",
+    "@types/js-yaml": "^4.0.0",
+    "@types/reflect-metadata": "^0.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "@vercel/ncc": "^0.27.0",
+    "concurrently": "^5.3.0",
+    "cpx": "^1.5.0",
+    "eslint": "^7.17.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-header": "^3.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.3",
+    "eslint-plugin-no-null": "^1.0.2",
+    "if-env": "^1.0.4",
+    "import-sort-style-eslint": "^6.0.0",
+    "jest": "^26.6.3",
+    "nexe": "3.3.7",
+    "prettier": "^2.2.1",
+    "prettier-plugin-import-sort": "^0.0.6",
+    "ts-jest": "^26.4.4",
+    "typescript": "^4.1.3"
+  },
+  "scripts": {
+    "prepare": "yarn clean && yarn build && yarn test",
+    "clean": "rimraf lib",
+    "format": "if-env SKIP_FORMAT=true && echo 'skip format check' || prettier --check '{src,tests}/**/*.ts' package.json",
+    "format:fix": "prettier --write '{src,tests}/**/*.ts' package.json",
+    "lint": "if-env SKIP_LINT=true && echo 'skip lint check' || eslint --cache=true --no-error-on-unmatched-pattern=true '{src,tests}/**/*.ts'",
+    "lint:fix": "eslint --fix --cache=true --no-error-on-unmatched-pattern=true \"{src,tests}/**/*.{ts,tsx}\"",
+    "compile": "tsc",
+    "build": "concurrently -n \"format,lint,compile\" -c \"red,green,blue\" \"yarn format\" \"yarn lint\" \"yarn compile\" && yarn run pack",
+    "watch": "tsc -w",
+    "test": "if-env SKIP_TEST=true && echo 'skip test' || jest --forceExit",
+    "test-watch": "jest --watchAll",
+    "pack": "ncc build dist/entrypoint.js -o lib"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "coverageDirectory": "./coverage",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(ts)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "importSort": {
+    ".ts": {
+      "style": "eslint",
+      "parser": "typescript"
+    }
+  }
+}

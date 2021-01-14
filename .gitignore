@@ -1,0 +1,11 @@
+coverage
+.intellij
+.eclipse
+.vscode
+node_modules
+dist
+lib
+yarn-error.log
+publish.sh
+.eslintcache
+

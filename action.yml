@@ -1,0 +1,23 @@
+name: 'Setup Eclipse Che'
+description: 'Install and start minikube and Eclipse Che on Github Runner'
+runs:
+  using: 'node12'
+  main: 'lib/index.js'
+inputs:
+  plugin-registry-image:
+    description: 'Specify the image to use for the plug-in registry. Format: image:tag'
+    required: false
+  devfile-registry-image:
+    description: 'Specify the image to use for the devfile registry. Format: image:tag'
+    required: false
+  che-server-image:
+    description: 'Specify the image to use for the che server. Format: image:tag'
+    required: false
+  skip-chectl-install:
+    description: 'Skip chectl install step if set to true. In this case, chectl needs to be available in the PATH'
+    required: false
+outputs:
+  che-url:
+    description: 'URL of the che-server started by this action'
+  che-token:
+    description: 'User Access Token'

@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "noEmitOnError": true,
+    "noImplicitReturns" : true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "removeComments": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "types": ["reflect-metadata", "jest"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+,
+  "include": [
+    "src/**/*"
+  ]
+,
+  "exclude": [
+    "node_modules",
+    "server"
+  ]
+}

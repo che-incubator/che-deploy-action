@@ -1,0 +1,38 @@
+# Publish next version of the github action on each commit to master
+
+name: publish
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - name: build
+        run: |
+          yarn
+      - name: report-coverage
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage/coverage-final.json
+      - name: publish
+        run: |
+          mkdir next
+          cp -r lib next
+          cp action.yml next
+          cd next
+          git init .
+          git config user.email "che-bot@eclipse.org"
+          git config user.name "Eclipse Che Bot"
+          git checkout --orphan next
+          git add ./*
+          git commit -m "Publish next version $(date +'%Y-%m-%d')" -s
+          git push -f "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/che-incubator/che-deploy-action.git" next
