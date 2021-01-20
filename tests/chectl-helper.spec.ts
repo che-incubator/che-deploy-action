@@ -27,12 +27,14 @@ describe('Test ChectlHelper', () => {
   const originalProcessEnv = process.env;
   let configuration: any;
   const skipChectlInstallMethod = jest.fn();
+  const chectlChannelMethod = jest.fn();
 
   beforeEach(() => {
     container = new Container();
     process.env = {};
     configuration = {
       skipChectlInstall: skipChectlInstallMethod,
+      chectlChannel: chectlChannelMethod,
     };
     container.bind(Configuration).toConstantValue(configuration);
     container.bind(ChectlHelper).toSelf().inSingletonScope();
@@ -86,6 +88,30 @@ describe('Test ChectlHelper', () => {
     expect(execaCall[1]).toStrictEqual(['--channel=next']);
 
     expect(output.pipe).toBeCalled();
+  });
+
+  test('install with stable', async () => {
+    const chectlHelper = container.get(ChectlHelper);
+    chectlChannelMethod.mockReturnValue('stable');
+    const output = { pipe: jest.fn() };
+    (execa as any).mockReturnValue({ exitCode: 0, stdout: output });
+
+    await chectlHelper.install();
+
+    const execaCall = ((execa as any) as jest.Mock).mock.calls[0];
+    expect(execaCall[0]).toBe('/tmp/chectl-install.sh');
+    expect(execaCall[1]).toStrictEqual(['--channel=stable']);
+
+    expect(output.pipe).toBeCalled();
+  });
+
+  test('install invalid/unknown channel', async () => {
+    const chectlHelper = container.get(ChectlHelper);
+    chectlChannelMethod.mockReturnValue('invalid');
+    const output = { pipe: jest.fn() };
+    (execa as any).mockReturnValue({ exitCode: 0, stdout: output });
+
+    await expect(chectlHelper.install()).rejects.toThrow('Invalid channel set for chectl');
   });
 
   test('install if skipped', async () => {

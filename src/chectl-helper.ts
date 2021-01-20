@@ -38,9 +38,14 @@ export class ChectlHelper {
       core.info('Skipping chectl installation as specified.');
       return;
     }
-    core.info('Installing chectl...');
+
+    const channel = this.configuration.chectlChannel() || 'next';
+    if (channel !== 'next' && channel !== 'stable') {
+      throw new Error('Invalid channel set for chectl: should be stable or next');
+    }
+    core.info(`Installing chectl [channel=${channel}]...`);
     // execute installer
-    const chectlInstallScriptProcess = execa(ChectlHelper.CHECTL_SCRIPT_PATH, ['--channel=next']);
+    const chectlInstallScriptProcess = execa(ChectlHelper.CHECTL_SCRIPT_PATH, [`--channel=${channel}`]);
 
     if (chectlInstallScriptProcess.stdout) {
       chectlInstallScriptProcess.stdout.pipe(process.stdout);

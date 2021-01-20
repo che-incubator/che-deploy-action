@@ -65,12 +65,16 @@ describe('Test Main with stubs', () => {
     const SKIP_CHECTL_INSTALL = 'true';
     (core as any).__setInput(Main.SKIP_CHECTL_INSTALL, SKIP_CHECTL_INSTALL);
 
+    const CHECTL_CHANNEL = 'next';
+    (core as any).__setInput(Main.CHECTL_CHANNEL, CHECTL_CHANNEL);
+
     const main = new Main();
     const configuration = await main.initConfiguration();
     expect(configuration.pluginRegistryImage()).toBe(PLUGIN_REGISTRY_IMAGE);
     expect(configuration.devfileRegistryImage()).toBe(DEVFILE_REGISTRY_IMAGE);
     expect(configuration.cheServerImage()).toBe(CHE_SERVER_IMAGE);
     expect(configuration.skipChectlInstall()).toBe(true);
+    expect(configuration.chectlChannel()).toBe(CHECTL_CHANNEL);
   });
 
   test('success if required parameter is provided', async () => {

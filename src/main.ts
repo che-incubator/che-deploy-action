@@ -18,11 +18,13 @@ export class Main {
   public static readonly DEVFILE_REGISTRY_IMAGE: string = 'devfile-registry-image';
   public static readonly CHE_SERVER_IMAGE: string = 'che-server-image';
   public static readonly SKIP_CHECTL_INSTALL: string = 'skip-chectl-install';
+  public static readonly CHECTL_CHANNEL: string = 'chectl-channel';
 
   async initConfiguration(): Promise<Configuration> {
     const pluginRegistryImage = core.getInput(Main.PLUGIN_REGISTRY_IMAGE);
     const devfileRegistryImage = core.getInput(Main.DEVFILE_REGISTRY_IMAGE);
     const cheServerImage = core.getInput(Main.CHE_SERVER_IMAGE);
+    const chectlChannel = core.getInput(Main.CHECTL_CHANNEL);
     const skipChectlInstall = 'true' === core.getInput(Main.SKIP_CHECTL_INSTALL);
 
     // configuration
@@ -31,6 +33,7 @@ export class Main {
       pluginRegistryImage: () => pluginRegistryImage,
       devfileRegistryImage: () => devfileRegistryImage,
       skipChectlInstall: () => skipChectlInstall,
+      chectlChannel: () => chectlChannel,
     };
   }
 

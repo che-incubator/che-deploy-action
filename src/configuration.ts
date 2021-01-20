@@ -16,4 +16,6 @@ export interface Configuration {
   devfileRegistryImage(): string | undefined;
 
   skipChectlInstall(): boolean;
+
+  chectlChannel(): string | undefined;
 }

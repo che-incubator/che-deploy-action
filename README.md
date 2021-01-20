@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Deploy Eclipse Che
-        id: che-deploy-action
+        id: deploy-che
         uses: che-incubator/che-deploy-action@main
 ```
 
@@ -31,10 +31,10 @@ jobs:
 ```yaml
 steps:
   - name: Deploy Eclipse Che
-    id: che-deploy-action
+    id: deploy-che
       uses: che-incubator/che-deploy-action@main
       with:
-        - <Use a parameter from the list below>: <specify here the value>
+        <Use a parameter from the list below>: <specify here the value>
 ```
 
 ## plugin-registry-image
@@ -50,6 +50,8 @@ Specify the image to use for the che server. Format: image:tag
 ## skip-chectl-install
 Skip chectl install step if set to true. In this case, chectl needs to be available in the PATH
 
+## chectl-channel
+Channel to use for chectl. Default is next. Choice: 'next' or 'stable'
 
 # Output
 
