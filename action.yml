@@ -22,5 +22,3 @@ inputs:
 outputs:
   che-url:
     description: 'URL of the che-server started by this action'
-  che-token:
-    description: 'User Access Token'

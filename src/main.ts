@@ -49,7 +49,8 @@ export class Main {
     try {
       await this.doStart();
       return true;
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error('stack=' + error.stack);
       console.error('Unable to start', error);
       return false;

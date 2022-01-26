@@ -58,10 +58,8 @@ describe('Test Logic InstallEclipseChe', () => {
     await installEclipseCheLogic.execute();
 
     expect(cheHelper.serverDeploy).toBeCalled();
-    expect(cheHelper.defineCheTokenOutputValue).toBeCalled();
     expect(cheHelper.defineCheUrlOutputValue).toBeCalled();
     expect(cheHelper.serverDeploy).toBeCalled();
-    expect(cheHelper.login).toBeCalled();
 
     expect(cheCtlHelper.download).toBeCalled();
     expect(cheCtlHelper.install).toBeCalled();

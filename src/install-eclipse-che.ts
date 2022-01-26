@@ -37,11 +37,5 @@ export class InstallEclipseChe {
 
     core.info('Eclipse Che [sets che-url]...');
     await this.cheHelper.defineCheUrlOutputValue();
-
-    core.info('Eclipse Che [sets che-token]...');
-    await this.cheHelper.defineCheTokenOutputValue();
-
-    core.info('Eclipse Che [login]...');
-    await this.cheHelper.login();
   }
 }

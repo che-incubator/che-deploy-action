@@ -52,13 +52,7 @@ describe('Test SetupCheHelper', () => {
     const customResource = cheHelper.getCustomResource();
 
     expect(customResource).toBe(`spec:
-  auth:
-    updateAdminPassword: false
-  server:
-    customCheProperties:
-      CHE_WORKSPACE_SIDECAR_IMAGE__PULL__POLICY: IfNotPresent
-      CHE_WORKSPACE_PLUGIN__BROKER_PULL__POLICY: IfNotPresent
-      CHE_INFRA_KUBERNETES_PVC_JOBS_IMAGE_PULL__POLICY: IfNotPresent
+  server: {}
 `);
   });
 
@@ -120,40 +114,6 @@ describe('Test SetupCheHelper', () => {
     expect((core.setOutput as any).mock.calls[0][1]).toBe('https://123.123.123.123');
   });
 
-  test('defineCheTokenOutputValue', async () => {
-    const keyCloakUrl = 'my-keycloak.url';
-    ((execa as any) as jest.Mock).mockResolvedValueOnce({ exitCode: 0, stdout: keyCloakUrl });
-
-    const keyCloakStdout = {
-      access_token: 'my-token',
-    };
-    ((execa as any) as jest.Mock).mockResolvedValueOnce({ exitCode: 0, stdout: JSON.stringify(keyCloakStdout) });
-
-    await cheHelper.defineCheTokenOutputValue();
-
-    expect((execa as any).mock.calls[0][0]).toBe('kubectl');
-    expect((execa as any).mock.calls[0][1][0]).toBe('get');
-    expect((execa as any).mock.calls[0][1][1]).toBe('ingress/keycloak');
-
-    expect((execa as any).mock.calls[1][0]).toBe('curl');
-    // keycloak url should be from the first call
-    expect((execa as any).mock.calls[1][1][3]).toBe(
-      `https://${keyCloakUrl}/auth/realms/che/protocol/openid-connect/token`
-    );
-  });
-
-  test('login', async () => {
-    ((execa as any) as jest.Mock).mockResolvedValueOnce({ exitCode: 0, stdout: undefined });
-    await cheHelper.login();
-
-    expect(core.info).toBeCalled();
-
-    expect((core.info as any).mock.calls[0][0]).toContain('Performing auth:Login');
-
-    expect((execa as any).mock.calls[0][0]).toBe('chectl');
-    expect((execa as any).mock.calls[0][1][0]).toBe('auth:login');
-  });
-
   test('server deploy no stdout/stderr', async () => {
     const writeFileSpy = jest.spyOn(fs, 'writeFile');
 
@@ -163,7 +123,7 @@ describe('Test SetupCheHelper', () => {
     await cheHelper.serverDeploy();
 
     expect(writeFileSpy.mock.calls[0][0]).toBe('/tmp/custom-resource-patch.yaml');
-    expect(writeFileSpy.mock.calls[0][1]).toContain('customCheProperties');
+    expect(writeFileSpy.mock.calls[0][1]).toContain('devfileRegistryPullPolicy');
 
     expect((execa as any).mock.calls[0][0]).toBe('chectl');
     expect((execa as any).mock.calls[0][1][0]).toBe('server:deploy');
@@ -180,7 +140,7 @@ describe('Test SetupCheHelper', () => {
     await cheHelper.serverDeploy();
 
     expect(writeFileSpy.mock.calls[0][0]).toBe('/tmp/custom-resource-patch.yaml');
-    expect(writeFileSpy.mock.calls[0][1]).toContain('customCheProperties');
+    expect(writeFileSpy.mock.calls[0][1]).toContain('devfileRegistryPullPolicy');
 
     expect((execa as any).mock.calls[0][0]).toBe('chectl');
     expect((execa as any).mock.calls[0][1][0]).toBe('server:deploy');
