@@ -68,6 +68,9 @@ describe('Test Main with stubs', () => {
     const CHECTL_CHANNEL = 'next';
     (core as any).__setInput(Main.CHECTL_CHANNEL, CHECTL_CHANNEL);
 
+    const JOB_NAME_SUFFIX = 'my job';
+    process.env['JOB_NAME_SUFFIX'] = JOB_NAME_SUFFIX;
+
     const main = new Main();
     const configuration = await main.initConfiguration();
     expect(configuration.pluginRegistryImage()).toBe(PLUGIN_REGISTRY_IMAGE);
@@ -75,6 +78,17 @@ describe('Test Main with stubs', () => {
     expect(configuration.cheServerImage()).toBe(CHE_SERVER_IMAGE);
     expect(configuration.skipChectlInstall()).toBe(true);
     expect(configuration.chectlChannel()).toBe(CHECTL_CHANNEL);
+    expect(configuration.jobNameSuffix()).toBe(JOB_NAME_SUFFIX);
+  });
+
+  test('basic post-action', async () => {
+    const main = new Main();
+    const isPostActionSpy = jest.spyOn(main, 'isPostAction');
+    isPostActionSpy.mockReturnValue(true);
+    const returnCode = await main.start();
+    expect(mockedConsoleError).toBeCalledTimes(0);
+    expect(returnCode).toBeTruthy();
+    expect(installEclipseCheExecuteMethod).toBeCalled();
   });
 
   test('success if required parameter is provided', async () => {
@@ -87,6 +101,28 @@ describe('Test Main with stubs', () => {
     expect(returnCode).toBeTruthy();
     expect(installEclipseCheExecuteMethod).toBeCalled();
     expect(mockedConsoleError).toBeCalledTimes(0);
+  });
+
+  test('is PostAction true', async () => {
+    const main = new Main();
+    const getStateSpy = jest.spyOn(core, 'getState');
+    const saveStateSpy = jest.spyOn(core, 'saveState');
+    getStateSpy.mockReturnValue(Main.ACTION_STATE_POST);
+    const isPostAction = await main.isPostAction();
+    expect(isPostAction).toBeTruthy();
+    expect(getStateSpy).toHaveBeenCalledWith(Main.ACTION_STATE);
+    expect(saveStateSpy).toHaveBeenCalledTimes(0);
+  });
+
+  test('is PostAction false', async () => {
+    const main = new Main();
+    const getStateSpy = jest.spyOn(core, 'getState');
+    const saveStateSpy = jest.spyOn(core, 'saveState');
+    getStateSpy.mockReturnValue('');
+    const isPostAction = await main.isPostAction();
+    expect(isPostAction).toBeFalsy();
+    expect(getStateSpy).toHaveBeenCalledWith(Main.ACTION_STATE);
+    expect(saveStateSpy).toHaveBeenCalledWith(Main.ACTION_STATE, Main.ACTION_STATE_POST);
   });
 
   test('error', async () => {

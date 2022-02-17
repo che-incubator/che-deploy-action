@@ -1,5 +1,5 @@
 /**********************************************************************
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2022 Red Hat, Inc.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,7 @@ import * as core from '@actions/core';
 import { Configuration } from './configuration';
 import { InstallEclipseChe } from './install-eclipse-che';
 import { InversifyBinding } from './inversify-binding';
+import { PostAction } from './post-action';
 
 export class Main {
   public static readonly PLUGIN_REGISTRY_IMAGE: string = 'plugin-registry-image';
@@ -19,6 +20,9 @@ export class Main {
   public static readonly CHE_SERVER_IMAGE: string = 'che-server-image';
   public static readonly SKIP_CHECTL_INSTALL: string = 'skip-chectl-install';
   public static readonly CHECTL_CHANNEL: string = 'chectl-channel';
+  public static readonly ACTION_STATE: string = 'eclipse-che-state';
+  public static readonly ACTION_STATE_MAIN: string = 'MAIN';
+  public static readonly ACTION_STATE_POST: string = 'POST';
 
   async initConfiguration(): Promise<Configuration> {
     const pluginRegistryImage = core.getInput(Main.PLUGIN_REGISTRY_IMAGE);
@@ -27,6 +31,9 @@ export class Main {
     const chectlChannel = core.getInput(Main.CHECTL_CHANNEL);
     const skipChectlInstall = 'true' === core.getInput(Main.SKIP_CHECTL_INSTALL);
 
+    // custom job name ?
+    const jobNameSuffix = process.env['JOB_NAME_SUFFIX'] || '';
+
     // configuration
     return {
       cheServerImage: () => cheServerImage,
@@ -34,15 +41,30 @@ export class Main {
       devfileRegistryImage: () => devfileRegistryImage,
       skipChectlInstall: () => skipChectlInstall,
       chectlChannel: () => chectlChannel,
+      jobNameSuffix: () => jobNameSuffix,
     };
+  }
+
+  isPostAction(): boolean {
+    const previousState = core.getState(Main.ACTION_STATE);
+    if (previousState !== Main.ACTION_STATE_POST) {
+      core.saveState(Main.ACTION_STATE, Main.ACTION_STATE_POST);
+      return false;
+    }
+    return true;
   }
 
   protected async doStart(): Promise<void> {
     const configuration = await this.initConfiguration();
     const inversifyBinbding = new InversifyBinding(configuration);
     const container = await inversifyBinbding.initBindings();
-    const installEclipseChe = container.get(InstallEclipseChe);
-    await installEclipseChe.execute();
+    if (this.isPostAction()) {
+      const postAction = container.get(PostAction);
+      await postAction.execute();
+    } else {
+      const installEclipseChe = container.get(InstallEclipseChe);
+      await installEclipseChe.execute();
+    }
   }
 
   async start(): Promise<boolean> {

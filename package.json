@@ -6,6 +6,7 @@
   "license": "EPL-2.0",
   "private": true,
   "dependencies": {
+    "@actions/artifact": "^0.5.0",
     "@actions/core": "^1.2.6",
     "@actions/tool-cache": "^1.6.1",
     "axios": "^0.21.1",
@@ -52,7 +53,7 @@
     "watch": "tsc -w",
     "test": "if-env SKIP_TEST=true && echo 'skip test' || jest --forceExit",
     "test-watch": "jest --watchAll",
-    "pack": "ncc build dist/entrypoint.js -o lib"
+    "pack": "ncc build dist/entrypoint.js -o lib && cp src/post-action-script.sh lib/"
   },
   "jest": {
     "collectCoverage": true,

@@ -3,6 +3,7 @@ description: 'Install and start minikube and Eclipse Che on Github Runner'
 runs:
   using: 'node12'
   main: 'lib/index.js'
+  post: 'lib/index.js'
 inputs:
   plugin-registry-image:
     description: 'Specify the image to use for the plug-in registry. Format: image:tag'

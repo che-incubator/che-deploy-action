@@ -14,6 +14,8 @@ import { ChectlHelper } from './chectl-helper';
 import { Configuration } from './configuration';
 import { Container } from 'inversify';
 import { InstallEclipseChe } from './install-eclipse-che';
+import { PostAction } from './post-action';
+import { PostActionScriptRunner } from './post-action-script-runner';
 
 export class InversifyBinding {
   private container: Container;
@@ -28,6 +30,8 @@ export class InversifyBinding {
 
     this.container.bind(Configuration).toConstantValue(this.configuration);
     this.container.bind(InstallEclipseChe).toSelf().inSingletonScope();
+    this.container.bind(PostAction).toSelf().inSingletonScope();
+    this.container.bind(PostActionScriptRunner).toSelf().inSingletonScope();
 
     return this.container;
   }
