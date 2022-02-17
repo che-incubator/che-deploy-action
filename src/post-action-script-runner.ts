@@ -36,8 +36,8 @@ export class PostActionScriptRunner {
 
   async run(): Promise<void> {
     // Execute the commands to grab stuff
-    core.info('Execute the shell script');
-    const actionScriptProcess = execa('__dirname/post-action-script.sh', []);
+    core.info('Execute the shell script in ' + __dirname);
+    const actionScriptProcess = execa(path.resolve(__dirname, 'post-action-script.sh'), []);
     if (actionScriptProcess.stdout) {
       actionScriptProcess.stdout.pipe(process.stdout);
     }
