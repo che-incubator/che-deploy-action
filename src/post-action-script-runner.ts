@@ -50,10 +50,11 @@ export class PostActionScriptRunner {
     const artifactClient = artifact.create();
     const artifactName = `Eclipse Che Logs ${this.configuration.jobNameSuffix()}`;
 
-    const logsPath = path.resolve(__dirname, 'che-logs');
+    const logsPath = path.resolve( process.cwd(), 'che-logs');
     core.info('Storing the folder' + logsPath);
     const files: string[] = [];
     this.getFilesFromDirectory(logsPath, files);
+    core.info('files are' + files.join(','));
     const rootDirectory = path.dirname(logsPath);
     const options = {
       continueOnError: true,

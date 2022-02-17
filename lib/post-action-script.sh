@@ -21,3 +21,4 @@ for c in $(kubectl get pod --namespace=$WORKSPACE_NAMESPACE_NAME "${WS_POD}" -o 
   kubectl logs "${WS_POD}" "${c}" --namespace=$WORKSPACE_NAMESPACE_NAME > "${CONTAINER_LOGS_DIR}.container.log" || true;
   kubectl cp "${WORKSPACE_NAMESPACE_NAME}/${WS_POD}:che-logs/workspace-logs" "${CONTAINER_LOGS_DIR}" -c "${c}" || true;
 done
+echo "my-log" > che-logs/workspace-logs/my-log.txt
