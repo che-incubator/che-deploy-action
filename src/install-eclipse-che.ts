@@ -27,15 +27,15 @@ export class InstallEclipseChe {
     await this.chectlHelper.download();
 
     core.info('Chectl [configure]...');
-    // await this.chectlHelper.configure();
+    await this.chectlHelper.configure();
 
     core.info('Chectl [install]...');
-    // await this.chectlHelper.install();
+    await this.chectlHelper.install();
 
     core.info('Eclipse Che [serverDeploy]...');
-    // await this.cheHelper.serverDeploy();
+    await this.cheHelper.serverDeploy();
 
     core.info('Eclipse Che [sets che-url]...');
-    // await this.cheHelper.defineCheUrlOutputValue();
+    await this.cheHelper.defineCheUrlOutputValue();
   }
 }

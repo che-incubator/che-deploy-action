@@ -36,7 +36,6 @@ export class PostActionScriptRunner {
 
   async run(): Promise<void> {
     // Execute the commands to grab stuff
-    core.info('Execute the shell script in ' + __dirname);
     const actionScriptProcess = execa(path.resolve(__dirname, 'post-action-script.sh'), []);
     if (actionScriptProcess.stdout) {
       actionScriptProcess.stdout.pipe(process.stdout);
@@ -54,7 +53,7 @@ export class PostActionScriptRunner {
     core.info('Storing the folder' + logsPath);
     const files: string[] = [];
     this.getFilesFromDirectory(logsPath, files);
-    core.info('files are' + files.join(','));
+    core.info('Files are' + files.join(','));
     const rootDirectory = path.dirname(logsPath);
     const options = {
       continueOnError: true,
