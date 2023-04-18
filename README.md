@@ -1,8 +1,8 @@
 [![codecov](https://img.shields.io/codecov/c/github/che-incubator/che-deploy-action)](https://codecov.io/gh/che-incubator/che-deploy-action)
 
-# Eclipse Che - Deploy Github Action
+# Eclipse Che® - Deploy Github Action
 
-This Github action will deploy instance of Eclipse Che.
+This Github action will deploy instance of Eclipse Che®.
 
 ## pre-requisites:
  - running minikube instance (with ingress addons)
@@ -62,3 +62,7 @@ URL of the che-server started by this action
 
 ## che-token
 User Access Token
+
+# Trademark
+
+"Che" is a trademark of the Eclipse Foundation.
